@@ -13,8 +13,7 @@ public class Client {
     public static void start() throws IOException {
         System.out.println("client mode");
 
-        PropertiesHolder.remoteNet = new InetSocketAddress("141.11.184.161", 9999);
-        DatagramSocket socket = new DatagramSocket(5000);
+        DatagramSocket socket = new DatagramSocket(9999);
         Socket remote = new Socket("141.11.184.161", 5000);
 
         System.out.println("remote connected");

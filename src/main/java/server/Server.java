@@ -43,6 +43,7 @@ public class Server {
 
                     System.out.println("server received");
                     System.out.println("send to: " + PropertiesHolder.port);
+
                     packet.setData(bytes.array());
                     packet.setSocketAddress(new InetSocketAddress("127.0.0.1", PropertiesHolder.port));
                     dst.send(packet);
