@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class Server {
     public static void start() throws IOException {
@@ -46,8 +45,8 @@ public class Server {
 
                     System.out.println("server received");
 
-                    packet.setData(bytes.array());
-                    packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9999));
+                    packet.setData(bytes.array(), 0, len);
+                    packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9898));
                     dst.send(packet);
                 }
             } catch (IOException ignored) {
@@ -88,7 +87,7 @@ public class Server {
     public static int messageLength(InputStream stream, byte firstByte) throws IOException {
         StringBuilder builder = new StringBuilder();
         while (firstByte != '-') {
-            builder.append(firstByte);
+            builder.append((char) firstByte);
 
             firstByte = (byte) stream.read();
         }

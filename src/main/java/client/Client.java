@@ -14,7 +14,7 @@ public class Client {
         System.out.println("client mode");
 
         DatagramSocket socket = new DatagramSocket(9999);
-        Socket remote = new Socket("141.11.184.161", 5000);
+        Socket remote = new Socket("127.0.0.1", 5000);
 
         System.out.println("remote connected");
 
@@ -38,7 +38,8 @@ public class Client {
 
                     System.out.println("server received");
                     System.out.println("send to: " + PropertiesHolder.port);
-                    packet.setData(bytes.array());
+
+                    packet.setData(bytes.array(), 0, len);
                     packet.setSocketAddress(new InetSocketAddress("127.0.0.1", PropertiesHolder.port));
                     dst.send(packet);
                 }
