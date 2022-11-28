@@ -8,6 +8,7 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class Client {
     public static void start() throws IOException {
@@ -32,9 +33,10 @@ public class Client {
 
                 while (true) {
                     bytes.clear();
+                    byte b = (byte) stream.read();
+                    int len = messageLength(stream, b);
+                    stream.read(bytes.array(), 0, len);
 
-                    bytes.array()[0] = (byte) stream.read();
-                    stream.read(bytes.array(), 1, stream.available());
                     System.out.println("server received");
                     System.out.println("send to: " + PropertiesHolder.port);
                     packet.setData(bytes.array());
@@ -62,6 +64,8 @@ public class Client {
                     System.out.println("received");
                     PropertiesHolder.port = packet.getPort();
 
+                    stream.write(String.valueOf(packet.getData().length).getBytes());
+                    stream.write('-');
                     stream.write(packet.getData());
                 }
             } catch (IOException ignored) {
@@ -70,6 +74,17 @@ public class Client {
         });
 
         thread.start();
+    }
+
+    public static int messageLength(InputStream stream, byte firstByte) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        while (firstByte != '-') {
+            builder.append(firstByte);
+
+            firstByte = (byte) stream.read();
+        }
+
+        return Integer.parseInt(builder.toString());
     }
 }
 

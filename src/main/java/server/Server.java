@@ -1,5 +1,6 @@
 package server;
 
+
 import client.PropertiesHolder;
 
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class Server {
     public static void start() throws IOException {
@@ -38,11 +40,11 @@ public class Server {
                 while (true) {
                     bytes.clear();
 
-                    bytes.array()[0] = (byte) stream.read();
-                    stream.read(bytes.array(), 1, stream.available());
+                    byte b = (byte) stream.read();
+                    int len = messageLength(stream, b);
+                    stream.read(bytes.array(), 0, len);
 
                     System.out.println("server received");
-                    System.out.println("send to: " + PropertiesHolder.port);
 
                     packet.setData(bytes.array());
                     packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9999));
@@ -70,6 +72,8 @@ public class Server {
 
                     PropertiesHolder.port = packet.getPort();
 
+                    stream.write(String.valueOf(packet.getData().length).getBytes());
+                    stream.write('-');
                     stream.write(packet.getData());
                 }
             } catch (IOException ignored) {
@@ -78,5 +82,16 @@ public class Server {
         });
 
         thread.start();
+    }
+
+    public static int messageLength(InputStream stream, byte firstByte) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        while (firstByte != '-') {
+            builder.append(firstByte);
+
+            firstByte = (byte) stream.read();
+        }
+
+        return Integer.parseInt(builder.toString());
     }
 }
