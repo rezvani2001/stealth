@@ -20,7 +20,7 @@ public class Client {
     }
 
     public static void startRemoteListener(Socket src, DatagramSocket dst) throws IOException {
-        src.connect(PropertiesHolder.remoteNet);
+//        src.connect(PropertiesHolder.remoteNet);
         InputStream stream = src.getInputStream();
 
         Thread thread = new Thread(() -> {
@@ -31,7 +31,10 @@ public class Client {
                 while (true) {
                     bytes.clear();
 
-                    stream.read(bytes.array(), 0, stream.available());
+                    bytes.array()[0] = (byte) stream.read();
+                    stream.read(bytes.array(), 1, stream.available());
+                    System.out.println("server received");
+                    System.out.println("send to: " + PropertiesHolder.port);
                     packet.setData(bytes.array());
                     packet.setSocketAddress(new InetSocketAddress("127.0.0.1", PropertiesHolder.port));
                     dst.send(packet);
@@ -54,6 +57,7 @@ public class Client {
 
                 while (true) {
                     src.receive(packet);
+                    System.out.println("received");
                     PropertiesHolder.port = packet.getPort();
 
                     stream.write(packet.getData());
@@ -69,6 +73,6 @@ public class Client {
 
 
 class PropertiesHolder {
-    public static int port;
+    public static int port = 9999;
     public static InetSocketAddress remoteNet;
 }
