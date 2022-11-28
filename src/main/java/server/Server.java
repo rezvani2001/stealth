@@ -45,7 +45,7 @@ public class Server {
                     System.out.println("send to: " + PropertiesHolder.port);
 
                     packet.setData(bytes.array());
-                    packet.setSocketAddress(new InetSocketAddress("127.0.0.1", PropertiesHolder.port));
+                    packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9999));
                     dst.send(packet);
                 }
             } catch (IOException ignored) {
