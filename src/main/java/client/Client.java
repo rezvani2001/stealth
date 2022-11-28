@@ -9,8 +9,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-public class Main {
-    public static void main(String[] args) throws IOException {
+public class Client {
+    public static void start() throws IOException {
         PropertiesHolder.remoteNet = new InetSocketAddress("141.11.184.161", 9999);
         DatagramSocket socket = new DatagramSocket(5000);
         Socket remote = new Socket("141.11.184.161", 5000);
