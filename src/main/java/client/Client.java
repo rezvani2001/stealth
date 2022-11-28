@@ -8,7 +8,6 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class Client {
     public static void start() throws IOException {
@@ -64,7 +63,7 @@ public class Client {
                     System.out.println("received");
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write(String.valueOf(packet.getData().length).getBytes());
+                    stream.write(String.valueOf(packet.getLength()).getBytes());
                     stream.write('-');
                     stream.write(packet.getData());
                 }

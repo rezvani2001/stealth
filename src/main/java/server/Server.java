@@ -72,7 +72,7 @@ public class Server {
 
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write(String.valueOf(packet.getData().length).getBytes());
+                    stream.write(String.valueOf(packet.getLength()).getBytes());
                     stream.write('-');
                     stream.write(packet.getData());
                 }
