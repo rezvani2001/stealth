@@ -1,5 +1,7 @@
 package server;
 
+import client.PropertiesHolder;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,7 +10,7 @@ import java.nio.ByteBuffer;
 
 public class Server {
     public static void start() throws IOException {
-        PropertiesHolder.remoteNet = new InetSocketAddress("127.0.0.1", 9999);
+        System.out.println("server mode");
         ServerSocket remote = new ServerSocket(5000);
 
         while (true) {
@@ -36,7 +38,11 @@ public class Server {
                 while (true) {
                     bytes.clear();
 
-                    stream.read(bytes.array(), 0, stream.available());
+                    bytes.array()[0] = (byte) stream.read();
+                    stream.read(bytes.array(), 1, stream.available());
+
+                    System.out.println("server received");
+                    System.out.println("send to: " + PropertiesHolder.port);
                     packet.setData(bytes.array());
                     packet.setSocketAddress(new InetSocketAddress("127.0.0.1", PropertiesHolder.port));
                     dst.send(packet);
@@ -59,6 +65,8 @@ public class Server {
 
                 while (true) {
                     src.receive(packet);
+                    System.out.println("received");
+
                     PropertiesHolder.port = packet.getPort();
 
                     stream.write(packet.getData());
@@ -70,10 +78,4 @@ public class Server {
 
         thread.start();
     }
-}
-
-
-class PropertiesHolder {
-    public static int port;
-    public static InetSocketAddress remoteNet;
 }

@@ -11,10 +11,14 @@ import java.nio.ByteBuffer;
 
 public class Client {
     public static void start() throws IOException {
+        System.out.println("client mode");
+
         PropertiesHolder.remoteNet = new InetSocketAddress("141.11.184.161", 9999);
         DatagramSocket socket = new DatagramSocket(5000);
         Socket remote = new Socket("141.11.184.161", 5000);
+
         System.out.println("remote connected");
+
         startClientListener(socket, remote);
         startRemoteListener(remote, socket);
     }
@@ -71,7 +75,3 @@ public class Client {
 }
 
 
-class PropertiesHolder {
-    public static int port = 9999;
-    public static InetSocketAddress remoteNet;
-}
