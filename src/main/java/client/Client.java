@@ -66,6 +66,7 @@ public class Client {
                     stream.write(String.valueOf(packet.getLength()).getBytes());
                     stream.write('-');
                     stream.write(packet.getData());
+                    stream.flush();
                 }
             } catch (IOException ignored) {
 
