@@ -26,7 +26,6 @@ public class Server {
 
 
     public static void startRemoteListener(Socket src, DatagramSocket dst) throws IOException {
-        src.connect(PropertiesHolder.remoteNet);
         InputStream stream = src.getInputStream();
 
         Thread thread = new Thread(() -> {
