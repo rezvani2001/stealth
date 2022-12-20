@@ -27,7 +27,6 @@ public class Server {
     }
 
 
-
     public static void startRemoteListener(Socket src, DatagramSocket dst) throws IOException {
         InputStream stream = src.getInputStream();
 
@@ -40,14 +39,16 @@ public class Server {
                     bytes.clear();
 
                     byte b = (byte) stream.read();
-                    int len = messageLength(stream, b);
-                    stream.read(bytes.array(), 0, len);
+                    if (b != 0) {
+                        int len = messageLength(stream, b);
+                        stream.read(bytes.array(), 0, len);
 
-                    System.out.println("server received");
+                        System.out.println("server received");
 
-                    packet.setData(bytes.array(), 0, len);
-                    packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9898));
-                    dst.send(packet);
+                        packet.setData(bytes.array(), 0, len);
+                        packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9999));
+                        dst.send(packet);
+                    }
                 }
             } catch (IOException ignored) {
 
@@ -68,11 +69,9 @@ public class Server {
                 while (true) {
                     src.receive(packet);
                     System.out.println("received");
-
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write(String.valueOf(packet.getLength()).getBytes());
-                    stream.write('-');
+                    stream.write((packet.getLength() + "-").getBytes());
                     stream.write(packet.getData());
                     stream.flush();
                 }

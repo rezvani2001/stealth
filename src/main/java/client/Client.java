@@ -14,7 +14,7 @@ public class Client {
         System.out.println("client mode");
 
         DatagramSocket socket = new DatagramSocket(9999);
-        Socket remote = new Socket("127.0.0.1", 5000);
+        Socket remote = new Socket("88.218.17.99", 5000);
 
         System.out.println("remote connected");
 
@@ -64,8 +64,7 @@ public class Client {
                     System.out.println("received");
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write(String.valueOf(packet.getLength()).getBytes());
-                    stream.write('-');
+                    stream.write((packet.getLength() + "-").getBytes());
                     stream.write(packet.getData());
                     stream.flush();
                 }
