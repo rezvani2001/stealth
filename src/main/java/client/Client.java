@@ -14,7 +14,7 @@ public class Client {
         System.out.println("client mode");
 
         DatagramSocket socket = new DatagramSocket(9999);
-        Socket remote = new Socket("88.218.17.99", 5000);
+        Socket remote = new Socket("127.0.0.1", 5000);
 
         System.out.println("remote connected");
 
@@ -33,18 +33,20 @@ public class Client {
                 while (true) {
                     bytes.clear();
                     byte b = (byte) stream.read();
-                    int len = messageLength(stream, b);
-                    stream.read(bytes.array(), 0, len);
+                    int len = stream.available();
+                    bytes.put(b);
 
-                    System.out.println("server received");
+                    stream.read(bytes.array(), 1, len);
+
+                    System.out.println("client received");
                     System.out.println("send to: " + PropertiesHolder.port);
 
                     packet.setData(bytes.array(), 0, len);
                     packet.setSocketAddress(new InetSocketAddress("127.0.0.1", PropertiesHolder.port));
                     dst.send(packet);
                 }
-            } catch (IOException ignored) {
-
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
         });
 
@@ -64,27 +66,16 @@ public class Client {
                     System.out.println("received");
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write((packet.getLength() + "-").getBytes());
                     stream.write(packet.getData());
                     stream.flush();
                 }
-            } catch (IOException ignored) {
 
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
         });
 
         thread.start();
-    }
-
-    public static int messageLength(InputStream stream, byte firstByte) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        while (firstByte != '-') {
-            builder.append(firstByte);
-
-            firstByte = (byte) stream.read();
-        }
-
-        return Integer.parseInt(builder.toString());
     }
 }
 
