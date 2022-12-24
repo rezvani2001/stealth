@@ -46,7 +46,7 @@ public class Server {
 
                         stream.read(bytes.array(), 1, len);
 
-                        System.out.println("server received");
+                        System.out.println("server received"+ len);
                         packet.setData(bytes.array(), 0, len);
                         packet.setSocketAddress(new InetSocketAddress("127.0.0.1", 9999));
                         dst.send(packet);
@@ -69,11 +69,12 @@ public class Server {
                 DatagramPacket packet = new DatagramPacket(bytes.array(), bytes.capacity());
 
                 while (true) {
+                    bytes.clear();
                     src.receive(packet);
                     System.out.println("received");
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write(packet.getData());
+                    stream.write(Arrays.copyOf(packet.getData(), packet.getLength()));
                     stream.flush();
                 }
             } catch (IOException e) {

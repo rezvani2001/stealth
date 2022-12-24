@@ -8,6 +8,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Client {
     public static void start() throws IOException {
@@ -60,17 +62,22 @@ public class Client {
             try {
                 ByteBuffer bytes = ByteBuffer.allocate(40960);
                 DatagramPacket packet = new DatagramPacket(bytes.array(), bytes.capacity());
-
+//                Scanner scanner = new Scanner(System.in);
                 while (true) {
+                    bytes.clear();
+
+
                     src.receive(packet);
-                    System.out.println("received");
+                    System.out.println("received" + packet.getLength());
                     PropertiesHolder.port = packet.getPort();
 
-                    stream.write(packet.getData());
+                    stream.write(Arrays.copyOf(packet.getData(), packet.getLength()));
                     stream.flush();
+//                    stream.write(scanner.nextLine().getBytes());
+//                    stream.flush();
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         });
